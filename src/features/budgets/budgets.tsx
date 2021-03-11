@@ -6,17 +6,23 @@ import {
     projectBudgets
 } from './budgetsSlice';
 import Budget from '../../interfaces/budget';
+import { AgGridColumn, AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 export const Budgets = () => {
     const totalBudget = useSelector(getTotalBudget);
     const dispatch = useDispatch();
     const [projectAmount, setProjectAmount] = useState(0);
     const [projectName, setProjectName] = useState('');
-    const budgetList = useSelector(projectBudgets).map((budget: Budget, index: number) =>
-        <div key={index}>
-            {budget.project}: ${budget.amount}
-        </div>
-    );
+    const budgetList: Budget[] = useSelector(projectBudgets);
+    const columnDef= [{
+        headerName: 'Project Name',
+        field: 'project'
+    }, {
+        headerName: 'Project Budget Amount',
+        field: 'amount'
+    }];
 
     return (
         <div>
@@ -30,7 +36,14 @@ export const Budgets = () => {
                     amount: projectAmount
                 }))}
             >Add New Project</button>
-            <div>{budgetList}</div>
+            <br />
+            <br />
+            <div className="ag-theme-alpine" style={{
+                height: 500,
+                width: 500
+            }}>
+                <AgGridReact columnDefs={columnDef} rowData={budgetList} />
+            </div>
         </div>
     );
 }
